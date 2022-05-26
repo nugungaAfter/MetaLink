@@ -1,7 +1,12 @@
 using System.Collections.Generic;
 using System.Collections;
+
+using UnityEngine.SceneManagement;
+using Unity.XR.CoreUtils;
 using UnityEngine.XR;
 using UnityEngine;
+
+using Metalink.Player;
 
 namespace Metalink.Manager
 {
@@ -10,37 +15,57 @@ namespace Metalink.Manager
         public void DeviceDetection();
     }
 
-    public class Manager_GameManagerBase : MonoBehaviour
+    public abstract class Manager_GameManagerBase : Manager_Base
     {
-        
+        public Player_Controller m_FirstPersonController;
+        public XROrigin m_XRRig;
     }
 
-    public class Manager_GameManagerExtension : Manager_GameManagerBase
+    public class Manager_GameManager : Manager_GameManagerBase, IManager_Start
     {
-        [SerializeField] protected GameObject m_FirstPersonController;
-        [SerializeField] protected GameObject m_XRRig;
-    }
+        public static Manager_GameManager g_Instance;
 
-    public class Manager_GameManager : Manager_GameManagerExtension, IManager_Start
-    {
-        public void Awake()
+        public override void Awake()
         {
-            DeviceDetection();
-        }
-
-        public void DeviceDetection()
-        {
-            if (XRSettings.isDeviceActive)
+            if (g_Instance == null)
             {
-                m_XRRig.SetActive(true);
+                g_Instance = this;
+                DontDestroyOnLoad(this);
             }
             else
             {
-                m_FirstPersonController.SetActive(true);
-
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                Destroy(this);
             }
+
+            base.Awake();
+        }
+
+        public override void DeviceDetection()
+        {
+            if (XRSettings.isDeviceActive)
+            {
+                m_XRRig.gameObject.SetActive(true);
+            }
+            else
+            {
+                m_FirstPersonController.gameObject.SetActive(true);
+                CursorActive(false);
+            }
+        }
+
+        public override void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            CursorActive(false);
+        }
+
+        public void CursorActive(bool p_Enable)
+        {
+            Cursor.visible = p_Enable;
+
+            if (p_Enable)
+                Cursor.lockState = CursorLockMode.None;
+            else
+                Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }

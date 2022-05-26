@@ -16,14 +16,14 @@ namespace Metalink.Player
         protected GameObject m_GrabObject = null;
         protected Transform m_GrabObjectParent = null;
 
+        public bool m_InteractionLock;
+
         protected RaycastHit InteractionCast
         {
             get
             {
                 Ray I_cameraRay = m_FirstPersonCamera.ScreenPointToRay(Input.mousePosition);
                 Physics.Raycast(I_cameraRay, out RaycastHit I_raycastHit, m_PlayerStatus.m_InteractionDistance);
-
-                print(I_raycastHit.collider);
                 return I_raycastHit;
             }
         }

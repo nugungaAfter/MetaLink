@@ -13,5 +13,7 @@ namespace Metalink.Player
 
         protected float m_ViewAngleX;
         protected float m_ViewAngleY;
+
+        public bool m_ViewLock;
     }
 }

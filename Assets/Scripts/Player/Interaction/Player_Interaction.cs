@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Metalink.Interaction;
+
 namespace Metalink.Player
 {
     public class Player_Interaction : Player_InteractionBase, IPlayer_InterationAction
@@ -16,6 +18,9 @@ namespace Metalink.Player
 
         public void GrabObject()
         {
+            if (m_InteractionLock)
+                return;
+
             if (m_GrabObject != null)
             {
                 ReleaseGrapObject();
@@ -56,7 +61,24 @@ namespace Metalink.Player
 
         public void InteractionObject()
         {
-            throw new System.Exception();
+            if (m_InteractionLock)
+                return;
+
+            Collider I_targetCollider = InteractionCast.collider;
+
+            if (I_targetCollider == null)
+                return;
+
+            Interaction_Object I_interactionObject = I_targetCollider.GetComponent<Interaction_Object>();
+
+            if (I_interactionObject == null)
+                I_interactionObject = I_targetCollider.GetComponentInChildren<Interaction_Object>();
+
+            if (I_interactionObject == null)
+                I_interactionObject = I_targetCollider.GetComponentInParent<Interaction_Object>();
+
+            if (I_interactionObject != null)
+                I_interactionObject.Interaction();
         }
     }
 }

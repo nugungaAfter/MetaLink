@@ -2,6 +2,34 @@
     "name": "PlayerInputAction",
     "maps": [
         {
+            "name": "Base",
+            "id": "250f974a-5906-4ab3-9de3-2a760758cfed",
+            "actions": [
+                {
+                    "name": "OpenMenu",
+                    "type": "Button",
+                    "id": "1a847486-4d98-4ff3-9d32-9d3f0768a767",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "de8ab1fe-b2dc-48a9-a4a2-0810b7e4b679",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "FirstPerson",
             "id": "c1dfb33f-7edc-4472-983c-067dff1de47f",
             "actions": [

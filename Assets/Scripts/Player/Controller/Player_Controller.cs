@@ -69,6 +69,9 @@ namespace Metalink.Player
 
         public void Rotate()
         {
+            if (m_ViewLock)
+                return;
+
             Vector2 I_mouseDelta = m_PlayerInput.MouseDelta;
             m_ViewAngleY += I_mouseDelta.x * m_PlayerStatus.m_CameraHorizontalSpeed * Time.deltaTime;
             transform.rotation = Quaternion.Euler(0, m_ViewAngleY, 0);
@@ -79,6 +82,9 @@ namespace Metalink.Player
 
         public void RotateView()
         {
+            if (m_ViewLock)
+                return;
+
             Vector2 I_mouseDelta = m_PlayerInput.MouseDelta;
             m_ViewAngleX += -I_mouseDelta.y * m_PlayerStatus.m_CameraVerticalSpeed * Time.deltaTime;
             m_ViewAngleX = Mathf.Clamp(m_ViewAngleX, m_PlayerStatus.m_CameraVerticalRange.y, m_PlayerStatus.m_CameraVerticalRange.x);
