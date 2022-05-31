@@ -33,6 +33,7 @@ namespace MLSC
                 }
 
                 p_Source.TrimAt(l_index);
+                p_Source.CommentRemoveAt(l_index);
 
                 if (isCommentLine(p_Source[l_index]))
                     l_RemoveLine.Add(l_index);

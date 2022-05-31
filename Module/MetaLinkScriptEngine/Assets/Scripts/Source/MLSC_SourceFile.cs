@@ -10,7 +10,7 @@ namespace MLSC.Source
 
         public override void MakeSource()
         {
-            if (m_isReading)
+            if (m_isMakeSource)
                 return;
 
             if (m_FilePath.Contains("./"))
@@ -29,7 +29,7 @@ namespace MLSC.Source
                 for (int l_lineNum = 0; l_lineNum < l_source.Length; l_lineNum++)
                     base.m_Sources.Add(new Line(l_lineNum, l_source[l_lineNum]));
 
-                m_isReading = true;
+                m_isMakeSource = true;
             }
             catch (System.Exception)
             {

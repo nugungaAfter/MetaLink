@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MLSC
 {
-    public struct MLSC_Code
+    public class MLSC_Code
     {
 
     }

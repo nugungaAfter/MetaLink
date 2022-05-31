@@ -5,7 +5,7 @@ using UnityEngine;
 namespace MLSC.Source
 {
     [System.Serializable]
-    public struct Line
+    public class Line
     {
         public int m_LineNumber;
         public string m_Text;
@@ -23,10 +23,10 @@ namespace MLSC.Source
         }
     }
 
-    public abstract class MLSC_Source : MonoBehaviour
+    public abstract class MLSC_Source : MonoBehaviour, IEnumerable
     {
+        [SerializeField] protected bool m_isMakeSource;
         [SerializeField] protected List<Line> m_Sources;
-        [SerializeField] protected bool m_isReading;
         [SerializeField] public List<MLSC_Token> m_Tokens;
         [SerializeField] public List<MLSC_Code> m_Codes;
 
@@ -53,16 +53,21 @@ namespace MLSC.Source
 
         public void TrimAt(int p_Index)
         {
-            var l_data = m_Sources[p_Index];
-            l_data.m_Text = l_data.m_Text.Trim();
-            m_Sources[p_Index] = l_data;
+            m_Sources[p_Index].m_Text = m_Sources[p_Index].m_Text.Trim();
         }
 
-        public List<Line> At()
+        public void CommentRemoveAt(int p_Index)
         {
-            return m_Sources;
+            int i = m_Sources[p_Index].m_Text.IndexOf('#');
+            if(i > 0)
+                m_Sources[p_Index].m_Text = m_Sources[p_Index].m_Text.Substring(i);
         }
 
         public abstract void MakeSource();
+
+        public IEnumerator GetEnumerator()
+        {
+            return m_Sources.GetEnumerator();
+        }
     }
 }

@@ -5,7 +5,7 @@ sum = 0
 println "수치를 입력해 주세요. 0을 입력하면 종료합니다."
 n = input()
 while n != 0
-    sum = sum + n
+    sum = sum + n # 시발
     println "    >", sum
     n = input()
 end
