@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MLSC.Source;
 using MLSC.Scanner;
+using DataStruct;
 
 namespace MLSC.Scanner
 {
@@ -27,15 +28,9 @@ namespace MLSC.Scanner
             return new MLSC_Keyword(MLSC_TokenKind.A_0x00_Others, "");
         }
 
-        public static bool isLetter(this char p_Ch)
-            => char.IsLetter(p_Ch);
-
-        public static bool isDigit(this char p_Ch)
-            => char.IsDigit(p_Ch);
-
-        public static bool isSpace(this char p_Ch)
-            => char.IsWhiteSpace(p_Ch);
-
+        public static bool isLetter(this char p_Ch) => char.IsLetter(p_Ch);
+        public static bool isDigit(this char p_Ch) => char.IsDigit(p_Ch);
+        public static bool isSpace(this char p_Ch) => char.IsWhiteSpace(p_Ch);
         public static bool isOperator(this char p_Ch)
         {
             bool isOperator1 = p_Ch >= 33 && p_Ch <= 47;
@@ -80,7 +75,6 @@ namespace MLSC
             new MLSC_Keyword(MLSC_TokenKind.A_0x82_Object, "Object"),       new MLSC_Keyword(MLSC_TokenKind.A_0x83_IF, "if"),
             new MLSC_Keyword(MLSC_TokenKind.A_0x84_ELIF, "elif"),           new MLSC_Keyword(MLSC_TokenKind.A_0x85_ELSE, "else"),
             new MLSC_Keyword(MLSC_TokenKind.A_0x86_FOR, "for"),             new MLSC_Keyword(MLSC_TokenKind.A_0x87_IN, "in"),
-            new MLSC_Keyword(MLSC_TokenKind.A_0x88_Exit, "exit"),           new MLSC_Keyword(MLSC_TokenKind.A_0x89_Option, "option"),
             new MLSC_Keyword(MLSC_TokenKind.A_0x90_Var, "var"),             new MLSC_Keyword(MLSC_TokenKind.A_0x91_Digit, "digit"),
             new MLSC_Keyword(MLSC_TokenKind.A_0x92_String, "string"),       new MLSC_Keyword(MLSC_TokenKind.A_0x93_Bool, "bool"),
             new MLSC_Keyword(MLSC_TokenKind.A_0x94_NOT, "not"),             new MLSC_Keyword(MLSC_TokenKind.A_0x95_AND, "and"),
@@ -93,88 +87,82 @@ namespace MLSC
             new MLSC_Keyword(MLSC_TokenKind.A_0xA7_MultiEqual, "*="),       new MLSC_Keyword(MLSC_TokenKind.A_0xA8_DIVIEqual, "/="),
             new MLSC_Keyword(MLSC_TokenKind.A_0xA9_Return, "return"),       new MLSC_Keyword(MLSC_TokenKind.A_0xAA_Break, "break"),
         };
-
-        private MLSC_TokenKind[] m_CharKeyWordTable = new MLSC_TokenKind[256];
-
         private int m_LineNum;
-        private int m_LinePtr;
+        private Deque<char> m_LineValue;
 
         private char? NextChar(MLSC_Source p_Source)
         {
-            int l_LineNumLinmit = p_Source.Count;
-            if (m_LineNum >= l_LineNumLinmit)
-                return null;
-
-            int l_LineLimit = p_Source[m_LineNum].Length;
-            if (m_LinePtr == l_LineLimit)
+            if(m_LineValue.Count == 0)
             {
-                m_LinePtr++;
-                return '\n';
-            }
-            else if (m_LinePtr > l_LineLimit)
-            {
-                m_LineNum++;
-                m_LinePtr = 0;
-                if (m_LineNum >= l_LineNumLinmit)
+                if (m_LineNum >= p_Source.Count)
                     return null;
-            }
 
-            return p_Source[m_LineNum][m_LinePtr++];
+                foreach (var item in p_Source[m_LineNum])
+                    m_LineValue.RearEnqueue(item);
+                m_LineValue.RearEnqueue('\n');
+                m_LineNum++;
+            }
+            return m_LineValue.FrontDequeue();
         }
 
         // 토큰의 추출
         public void Scanning(MLSC_Source p_Source)
         {
             m_LineNum = 0;
-            m_LinePtr = 0;
-            p_Source.m_Tokens ??= new List<MLSC_Token>();
-
+            p_Source.m_Tokens ??= new Deque<MLSC_Token>();
+            m_LineValue ??= new Deque<char>();
+            
             for (char? l_ch = NextChar(p_Source); l_ch != null; l_ch = NextChar(p_Source))
             {
+                if (l_ch.Value == '\n')
+                {
+                    p_Source.m_Tokens.Add(new MLSC_Token(MLSC_TokenKind.A_0xFE_EOL, "\n", m_LineNum));
+                    continue;
+                }
                 if (l_ch.Value.isSpace())
                     continue;
 
                 string l_buf = ""; MLSC_TokenKind l_TokenKind;
+                bool isSkip = false;
                 if (l_ch.Value.isDigit()) // 정수
                 {
                     for (; l_ch != null && l_ch.Value.isDigit(); l_ch = NextChar(p_Source))
                         l_buf += l_ch.Value;
 
-                    if (l_ch == '.')
-                    {
-                        for (; l_ch != null && (l_buf == "." || l_ch.Value.isDigit()); l_ch = NextChar(p_Source))
-                            l_buf += l_ch.Value;
-                        l_TokenKind = MLSC_TokenKind.A_0x02_ValueDbl;
-                    }
-                    else
-                        l_TokenKind = MLSC_TokenKind.A_0x02_ValueInt;
+                    if (l_ch == '.') l_TokenKind = MLSC_TokenKind.A_0x02_ValueDbl;
+                    else             l_TokenKind = MLSC_TokenKind.A_0x02_ValueInt;
+                    for (; l_ch != null && (l_buf == "." || l_ch.Value.isDigit()); l_ch = NextChar(p_Source))
+                        l_buf += l_ch.Value;
                 }
                 else if (l_ch == '\'' || l_ch == '\"') // 문자열
                 {
                     char l_endCh = l_ch.Value; l_ch = NextChar(p_Source);
                     for (; l_ch != null && l_ch.Value != l_endCh; l_ch = NextChar(p_Source))
                         l_buf += l_ch;
-                    NextChar(p_Source); l_TokenKind = MLSC_TokenKind.A_0x02_ValueStr;
+                    l_ch = NextChar(p_Source); l_TokenKind = MLSC_TokenKind.A_0x02_ValueStr;
                 }
                 else if (l_ch.Value.isOperator()) // 연산자
                 {
                     l_buf += l_ch.Value; char? l_operator2 = NextChar(p_Source);
-                    if (l_operator2.Value.isOperator())
+                    if (l_operator2 != null && l_operator2.Value.isOperator())
                     {
-                        if ((l_buf + l_operator2).isOperator2())
+                        if ((l_buf + l_operator2).isOperator2()) // 두 문자 연산자
                         {
                             l_TokenKind = m_KeywordTable.Search(l_buf + l_operator2).Kind;
                             l_buf += l_operator2;
                         }
-                        else
+                        else // 각 각의 연산자인경우
                         {
                             p_Source.m_Tokens.Add(new MLSC_Token(m_KeywordTable.Search(l_buf).Kind, l_buf, m_LineNum));
                             l_buf = l_operator2.ToString(); l_TokenKind = m_KeywordTable.Search(l_operator2.ToString()).Kind;
                         }
-                        NextChar(p_Source);
+                        isSkip = true;
                     }
                     else
+                    {
                         l_TokenKind = m_KeywordTable.Search(l_buf).Kind;
+                        l_ch = l_operator2;
+                    }
                 }
                 else // 식별자
                 {
@@ -183,9 +171,11 @@ namespace MLSC
                     MLSC_TokenKind l_Searchkind = m_KeywordTable.Search(l_buf).Kind;
                     l_TokenKind = l_Searchkind == MLSC_TokenKind.A_0x00_Others ? MLSC_TokenKind.A_0x02_Ident : l_Searchkind;
                 }
-                m_LinePtr--;
+                if (l_ch != null && !isSkip)
+                    m_LineValue.FrontEnqueue(l_ch.Value);
                 p_Source.m_Tokens.Add(new MLSC_Token(l_TokenKind, l_buf, m_LineNum));
             }
+            p_Source.m_BackUp = (Deque<MLSC_Token>)p_Source.m_Tokens.Clone();
         }
     }
 }

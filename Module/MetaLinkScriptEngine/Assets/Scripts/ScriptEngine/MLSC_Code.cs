@@ -6,6 +6,6 @@ namespace MLSC
 {
     public class MLSC_Code
     {
-
+        public string Code;
     }
 }

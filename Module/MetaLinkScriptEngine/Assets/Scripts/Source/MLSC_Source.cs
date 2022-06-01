@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DataStruct;
 
 namespace MLSC.Source
 {
@@ -27,7 +28,8 @@ namespace MLSC.Source
     {
         [SerializeField] protected bool m_isMakeSource;
         [SerializeField] protected List<Line> m_Sources;
-        [SerializeField] public List<MLSC_Token> m_Tokens;
+        [SerializeField] public Deque<MLSC_Token> m_Tokens;
+        [SerializeField] public Deque<MLSC_Token> m_BackUp;
         [SerializeField] public List<MLSC_Code> m_Codes;
 
         public int Count => m_Sources.Count;
@@ -45,29 +47,25 @@ namespace MLSC.Source
                 return m_Sources[l_TargetIndex].m_Text;
             }
         }
-
         public void RemoveAt(int p_Index)
         {
             m_Sources.RemoveAt(p_Index);
         }
-
         public void TrimAt(int p_Index)
         {
             m_Sources[p_Index].m_Text = m_Sources[p_Index].m_Text.Trim();
         }
-
         public void CommentRemoveAt(int p_Index)
         {
             int i = m_Sources[p_Index].m_Text.IndexOf('#');
             if(i > 0)
-                m_Sources[p_Index].m_Text = m_Sources[p_Index].m_Text.Substring(i);
+                m_Sources[p_Index].m_Text = m_Sources[p_Index].m_Text[0..i];
         }
-
-        public abstract void MakeSource();
-
         public IEnumerator GetEnumerator()
         {
             return m_Sources.GetEnumerator();
         }
+        public void RestoreToken() => m_Tokens = (Deque<MLSC_Token>)m_BackUp.Clone();
+        public abstract void MakeSource();
     }
 }

@@ -9,8 +9,6 @@ namespace MLSC
     public enum MLSC_TokenKind
     {
         A_0x00_Others, // 기타
-        A_0x01_Letter, // 영문자
-        A_0x02_Digit, // 숫자
         A_0x02_Ident, // 식별자
         A_0x02_ValueInt, // 정수 값
         A_0x02_ValueDbl, // 실수 값
@@ -56,7 +54,6 @@ namespace MLSC
         A_0x85_ELSE,
         A_0x86_FOR,
         A_0x87_IN,
-        A_0x88_Exit,
         A_0x89_Option,
         A_0x90_Var,
         A_0x91_Digit,
@@ -79,6 +76,9 @@ namespace MLSC
         A_0xA8_DIVIEqual,
         A_0xA9_Return,
         A_0xAA_Break,
+        A_0xAB_FunctionCall,
+        A_0xFE_EOL,
+        A_0xFF_EOF,
     }
 
     [System.Serializable]
