@@ -18,7 +18,7 @@ namespace Metalink.Player
         public UnityAction m_GrabAction;
         public UnityAction m_InteractionAction;
 
-        public bool m_IsRunning;
-        public bool m_IsCrouching;
+        [HideInInspector] public bool m_IsRunning;
+        [HideInInspector] public bool m_IsCrouching;
     }
 }

@@ -1,20 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-
-using Metalink.Player;
-
 using UnityEngine.InputSystem;
-using UnityEngine;
 
 namespace Metalink.MapEditor
 {
-    public class MapEditor_Input : Player_Input
+    public class MapEditor_Input : MapEditor_InputBase
     {
-        public bool m_IsPan;
-        public bool m_IsRotate;
-
-        public float m_UpDownAxis;
-
         public override void Awake()
         {
             base.Awake();
