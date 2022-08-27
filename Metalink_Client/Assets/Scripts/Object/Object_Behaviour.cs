@@ -3,9 +3,12 @@ using UnityEngine;
 
 namespace Metalink.Object
 {
-    public abstract class MetalinkBehaviour : MetalinkComponent
+    public class MetalinkBehaviour : MetalinkComponent
     {
-        public MetalinkBehaviour(Transform p_Transform, GameObject p_GameObject, Dictionary<string, string> p_Scripts) : base(p_Transform, p_GameObject, p_Scripts) { }
+        public MetalinkBehaviour(Transform p_Transform, GameObject p_GameObject, Dictionary<string, string> p_Scripts) : base(p_Transform, p_GameObject, p_Scripts) 
+        {
+            
+        }
 
         public bool enabled { get; set; }
 

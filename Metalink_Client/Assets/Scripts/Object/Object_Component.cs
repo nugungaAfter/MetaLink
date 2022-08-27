@@ -16,6 +16,8 @@ namespace Metalink.Object
         public MetalinkComponent(Transform p_Transform, GameObject p_GameObject, Dictionary<string, string> p_Scripts) : base()
         {
             Scripts = p_Scripts;
+            Transform = p_Transform;
+            GameObject = p_GameObject;
         }
 
         public T GetComponent<T>()

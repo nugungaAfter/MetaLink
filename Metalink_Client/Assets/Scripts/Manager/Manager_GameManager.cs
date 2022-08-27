@@ -24,6 +24,7 @@ namespace Metalink.Manager
     public class Manager_GameManager : Manager_GameManagerBase, IManager_Start
     {
         public static Manager_GameManager g_Instance;
+        //public List<Object>  
 
         public override void Awake()
         {

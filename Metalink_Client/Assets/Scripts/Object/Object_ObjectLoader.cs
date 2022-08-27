@@ -225,6 +225,9 @@ namespace Metalink.Object
                     l_loadObject.name = l_resource.m_Name;
                     l_transformData.Value.SetTransform(l_loadObject.transform);
 
+                    // 
+                    var behaiver = new MetalinkBehaviour(l_loadObject.transform, l_loadObject, null);
+
                     l_success++;
                 }
                 catch {
@@ -238,7 +241,7 @@ namespace Metalink.Object
             }
         }
 
-        private static GameObject DownloadObject(string p_DownloadPath)
+        private static GameObject DownloadObject(string p_DownloadPath) 
         {
             FileInfo l_downloadFileInfo = new FileInfo(p_DownloadPath);
             string l_filePath = TempFolder + $"/{l_downloadFileInfo.Name}";
