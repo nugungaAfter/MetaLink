@@ -248,7 +248,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5598665852676487509}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -264,7 +264,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782e060e98640fb4d9a19125d0fef57e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textSetting: {fileID: 11400000, guid: 79901045fa634224abce1fa654a030aa, type: 2}
   alterPanel: {fileID: 5598665852676487471}
   alterText: {fileID: 5598665852596186522}
 --- !u!1 &5598665853515123885
