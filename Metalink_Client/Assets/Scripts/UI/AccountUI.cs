@@ -64,7 +64,7 @@ namespace UI
                 emailIAdressInputField.text,
                 passwordInputField.text,
                 nicknameInputField.text,
-                val => Progress = val
+                (result, val) => Progress = val
             );
         }
 
@@ -76,8 +76,16 @@ namespace UI
             MultiplayAccountManager.Instance.LogIn(
                 emailIAdressInputField.text,
                 passwordInputField.text,
-                val => Progress = val
+                OnLoginSuccess
             );
+        }
+
+        public void OnLoginSuccess(bool result, string message)
+        {
+            if (result) {
+                Scene.SceneLoadManager.LoadScene("Lobby");
+            }
+            Progress = message;
         }
 
         private bool IsAccountInputVaild()

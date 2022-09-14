@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
@@ -19,20 +17,6 @@ public class Keyboard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private bool isUpper = false;
     private bool isHoldKeyboard = false;
 
-    private Vector3 lastFollorTargetPosition;
-    private Vector3 LastFollowTargetPostion
-    {
-        get => lastFollorTargetPosition;
-        set
-        {
-            if (value == lastFollorTargetPosition)
-                return;
-
-            lastFollorTargetPosition = value;
-            transform.position = lastFollorTargetPosition + followOffset;
-        }
-    }
-
     void Awake()
     {
         SetKeyboard(defaultKeyboard);
@@ -45,8 +29,7 @@ public class Keyboard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void Update()
     {
-        if (followTarget)
-            LastFollowTargetPostion = followTarget.position;
+        transform.position = followTarget.position + followOffset;
     }
 
     public void OnPointerEnter(PointerEventData eventData) => isHoldKeyboard = true;
@@ -58,7 +41,7 @@ public class Keyboard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (inputField != null)
             return;
 
-        foreach (var inputField in GameObject.FindObjectsOfType<TMP_InputField>()) {
+        foreach (var inputField in FindObjectsOfType<TMP_InputField>()) {
             var eventTrigger = inputField.gameObject.AddComponent<EventTrigger>();
 
             var select = new EventTrigger.Entry() { eventID = EventTriggerType.Select };
@@ -66,15 +49,17 @@ public class Keyboard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 gameObject.SetActive(true);
                 this.inputField = inputField;
             });
+            eventTrigger.triggers.Add(select);
+
             var deselect = new EventTrigger.Entry() { eventID = EventTriggerType.Deselect };
-            select.callback.AddListener(data => {
+            deselect.callback.AddListener(data => {
                 if (isHoldKeyboard)
                     return;
 
                 gameObject.SetActive(false);
                 this.inputField = null;
             });
-            eventTrigger.triggers.Add(select);
+            eventTrigger.triggers.Add(deselect);
         }
     }
 

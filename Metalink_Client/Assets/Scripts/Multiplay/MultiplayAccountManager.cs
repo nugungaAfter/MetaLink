@@ -20,38 +20,40 @@ namespace Multiplay
             }
         }
 
-        public void SignUp(string emailAdress, string password, string username, UnityAction<string> callback = null)
+        public void SignUp(string emailAdress, string password, string username, UnityAction<bool, string> callback = null)
         {
             var request = new RegisterPlayFabUserRequest { Email = emailAdress, Password = password, Username = username };
             PlayFabClientAPI.RegisterPlayFabUser(request, val => OnSingUpSucces(val, callback), val => OnSingUpFailuer(val, callback));
         }
 
-        public void OnSingUpSucces(RegisterPlayFabUserResult registerPlayFabUserResult, UnityAction<string> successCallback)
+        public void OnSingUpSucces(RegisterPlayFabUserResult registerPlayFabUserResult, UnityAction<bool, string> successCallback)
         {
+            successCallback?.Invoke(true, "SignUp Succes");
             Debug.Log("회원가입 성공");
         }
 
-        public void OnSingUpFailuer(PlayFabError playFabError, UnityAction<string> failedCallback)
+        public void OnSingUpFailuer(PlayFabError playFabError, UnityAction<bool, string> failedCallback)
         {
-            Debug.Log("회원가입 실패");
-
+            failedCallback?.Invoke(false, "SingUp Failed, " + playFabError.ErrorMessage);
+            Debug.Log("회원가입 실패, " + playFabError.ErrorMessage);
         }
 
-        public void LogIn(string emailAdress, string password, UnityAction<string> callback = null)
+        public void LogIn(string emailAdress, string password, UnityAction<bool, string> callback = null)
         {
             var request = new LoginWithEmailAddressRequest { Email = emailAdress, Password = password };
             PlayFabClientAPI.LoginWithEmailAddress(request, val => OnLogInSucces(val, callback), val => OnLogInFailuer(val, callback));
         }
 
-        public void OnLogInSucces(LoginResult loginResult, UnityAction<string> successCallback)
+        public void OnLogInSucces(LoginResult loginResult, UnityAction<bool, string> successCallback)
         {
+            successCallback?.Invoke(true, "LogIn Succes");
             Debug.Log("로그인 성공");
         }
 
-        public void OnLogInFailuer(PlayFabError playFabError, UnityAction<string> failedCallback)
+        public void OnLogInFailuer(PlayFabError playFabError, UnityAction<bool, string> failedCallback)
         {
-            Debug.Log("로그인 실패");
-
+            failedCallback?.Invoke(false, "LogIn Failed, " );
+            Debug.Log("로그인 실패, " + playFabError.ErrorMessage);
         }
     }
 }
