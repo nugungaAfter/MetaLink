@@ -1,6 +1,7 @@
 using UnityEngine.Events;
 using UnityEngine;
-using BackEnd;
+using PlayFab.ClientModels;
+using PlayFab;
 
 namespace Multiplay
 {
@@ -19,61 +20,38 @@ namespace Multiplay
             }
         }
 
-        public void SignUp(string emailAdress, string password, UnityAction<string> successCallback = null, UnityAction<string, string> failedCallback = null)
+        public void SignUp(string emailAdress, string password, string username, UnityAction<string> callback = null)
         {
-            if (!Backend.IsInitialized)
-                return;
-
-            successCallback += val => Debug.Log("회원가입 성공");
-            failedCallback += (msg, code) => Debug.Log("회원가입 실패");            
-
-            var bro = Backend.BMember.CustomSignUp(emailAdress, password);
-            if (bro.IsSuccess()) {
-                Backend.BMember.CustomLogin(emailAdress, password);
-                Backend.BMember.UpdateCustomEmail(emailAdress);
-            }
-
-            CallbackAccount(bro, successCallback, failedCallback);
+            var request = new RegisterPlayFabUserRequest { Email = emailAdress, Password = password, Username = username };
+            PlayFabClientAPI.RegisterPlayFabUser(request, val => OnSingUpSucces(val, callback), val => OnSingUpFailuer(val, callback));
         }
 
-        public void LogIn(string emailAdress, string password, UnityAction<string> successCallback = null, UnityAction<string, string> failedCallback = null)
+        public void OnSingUpSucces(RegisterPlayFabUserResult registerPlayFabUserResult, UnityAction<string> successCallback)
         {
-            if (!Backend.IsInitialized)
-                return;
-
-            successCallback += val => Debug.Log("로그인 성공");
-            failedCallback += (msg, code) => Debug.Log("로그인 실패");
-
-            var bro = Backend.BMember.CustomLogin(emailAdress, password);
-
-            CallbackAccount(bro, successCallback, failedCallback);
+            Debug.Log("회원가입 성공");
         }
 
-
-        public void CreateNickname(string nickname, UnityAction<string> successCallback = null, UnityAction<string, string> failedCallback = null)
+        public void OnSingUpFailuer(PlayFabError playFabError, UnityAction<string> failedCallback)
         {
-            if (!Backend.IsInitialized)
-                return;
+            Debug.Log("회원가입 실패");
 
-            successCallback += val => Debug.Log("닉네임 생성 성공");
-            failedCallback += (msg, code) => Debug.Log("닉네임 생성 실패");
-
-            nickname = nickname.Trim();
-            var bro = Backend.BMember.CreateNickname(nickname);
-
-            CallbackAccount(bro, successCallback, failedCallback);
         }
-        private void CallbackAccount(BackendReturnObject bro, UnityAction<string> successCallback, UnityAction<string, string> failedCallback)
+
+        public void LogIn(string emailAdress, string password, UnityAction<string> callback = null)
         {
-            if (bro.IsSuccess()) {
-                successCallback?.Invoke(bro.GetMessage());
-            }
-            else {
-                string errorMessage = bro.GetMessage();
-                string errorCode = bro.GetErrorCode();
-                failedCallback?.Invoke(errorMessage, errorCode);
-                Debug.LogError($"[{bro.GetStatusCode()} {errorCode}] : {errorMessage}");
-            }
+            var request = new LoginWithEmailAddressRequest { Email = emailAdress, Password = password };
+            PlayFabClientAPI.LoginWithEmailAddress(request, val => OnLogInSucces(val, callback), val => OnLogInFailuer(val, callback));
+        }
+
+        public void OnLogInSucces(LoginResult loginResult, UnityAction<string> successCallback)
+        {
+            Debug.Log("로그인 성공");
+        }
+
+        public void OnLogInFailuer(PlayFabError playFabError, UnityAction<string> failedCallback)
+        {
+            Debug.Log("로그인 실패");
+
         }
     }
 }

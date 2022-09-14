@@ -20,11 +20,13 @@ namespace UI
         [SerializeField] private TMP_InputField confirmPasswordInputField;
         [SerializeField] private TMP_InputField nicknameInputField;
 
-        private AlterUI alterUI;
+        [Header("Info")]
+        [SerializeField] private TextMeshProUGUI progressText;
 
-        private void Awake()
+        public string Progress
         {
-            alterUI = FindObjectOfType<AlterUI>();
+            get => progressText.text;
+            set => progressText.text = value; 
         }
 
         public void LoginPanelToggle(bool active)
@@ -54,19 +56,15 @@ namespace UI
                 return;
 
             if(passwordInputField.text != confirmPasswordInputField.text) {
-                alterUI.Enable(textSetting.account_ConfirmPasswordError);
+                Progress = textSetting.account_ConfirmPasswordError;
                 return;
             }
 
             MultiplayAccountManager.Instance.SignUp(
                 emailIAdressInputField.text,
                 passwordInputField.text,
-                (val) => {
-                    alterUI.Enable(textSetting.account_SuccesSignUp);
-                    SignUpPanelToggle(false);
-                    NicknamePanelToggle(true);
-                },
-                (msg, code) => alterUI.Enable(textSetting.GetErrorMessage(msg, code))
+                nicknameInputField.text,
+                val => Progress = val
             );
         }
 
@@ -78,48 +76,24 @@ namespace UI
             MultiplayAccountManager.Instance.LogIn(
                 emailIAdressInputField.text,
                 passwordInputField.text,
-                (val) => {
-                    alterUI.Enable(textSetting.account_SuccesLogin);
-
-                    if (string.IsNullOrEmpty(BackEnd.Backend.UserNickName))
-                        NicknamePanelToggle(true);
-                    else
-                        Scene.SceneLoadManager.LoadScene("Lobby");
-                },
-                (msg, code) => alterUI.Enable(textSetting.GetErrorMessage(msg, code))
-            );
-        }
-
-        public void CreateNickname()
-        {
-            if (IsStringNull(nicknameInputField.text)) {
-                alterUI.Enable(textSetting.account_NoneInputNickName);
-                return;
-            }
-
-            MultiplayAccountManager.Instance.CreateNickname(
-                nicknameInputField.text,
-                (val) => {
-                    Scene.SceneLoadManager.LoadScene("Lobby");
-                },
-                (msg, code) => alterUI.Enable(textSetting.GetErrorMessage(msg, code))
+                val => Progress = val
             );
         }
 
         private bool IsAccountInputVaild()
         {
             if (IsStringNull(emailIAdressInputField.text)) {
-                alterUI.Enable(textSetting.account_NoneInputEmailAdress);
+                Progress = textSetting.account_NoneInputEmailAdress;
                 return false;
             }
 
             if (!IsEmailAdressVaild(emailIAdressInputField.text)) {
-                alterUI.Enable(textSetting.GetErrorMessage("Invalid email input"));
+                Progress = textSetting.account_ErrorEmailAdress;
                 return false;
             }
 
             if (IsStringNull(passwordInputField.text)) {
-                alterUI.Enable(textSetting.account_NoneInputPassword);
+                Progress = textSetting.account_NoneInputPassword;
                 return false;
             }
 

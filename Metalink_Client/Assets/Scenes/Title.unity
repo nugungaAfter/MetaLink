@@ -1091,7 +1091,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 798764515}
         m_TargetAssemblyTypeName: UI.AccountUI, Assembly-CSharp
-        m_MethodName: CreateNickname
+        m_MethodName: SignUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1478,7 +1478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.5, y: -0.6}
+  m_AnchoredPosition: {x: 0.5, y: -0.5999999}
   m_SizeDelta: {x: 0.5, y: 0.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &711317188
@@ -1769,7 +1769,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 798764510}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1867,11 +1867,11 @@ MonoBehaviour:
   loginPanel: {fileID: 715834854}
   signUpPanel: {fileID: 1700182408}
   nicknamePanel: {fileID: 93026850}
-  alterUI: {fileID: 1000492574}
   emailIAdressInputField: {fileID: 1956301529}
   passwordInputField: {fileID: 1497637462}
   confirmPasswordInputField: {fileID: 1462991891}
   nicknameInputField: {fileID: 2001645777}
+  progressText: {fileID: 0}
 --- !u!114 &798764516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2619,17 +2619,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 979706212}
   m_CullTransparentMesh: 1
---- !u!114 &1000492574 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 960795561, guid: e8d5870e18fd0ad449d7c7ac24a8f124, type: 3}
-  m_PrefabInstance: {fileID: 649747429}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 782e060e98640fb4d9a19125d0fef57e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1041278345
 GameObject:
   m_ObjectHideFlags: 0
@@ -3514,8 +3503,20 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 798764515}
         m_TargetAssemblyTypeName: UI.AccountUI, Assembly-CSharp
-        m_MethodName: SignUp
-        m_Mode: 1
+        m_MethodName: SignUpPanelToggle
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 798764515}
+        m_TargetAssemblyTypeName: UI.AccountUI, Assembly-CSharp
+        m_MethodName: NicknamePanelToggle
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
