@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
-using Multiplay;
+using Metalink.Multiplay;
 using TMPro;
 
 namespace UI
@@ -82,9 +82,6 @@ namespace UI
 
         public void OnLoginSuccess(bool result, string message)
         {
-            if (result) {
-                Scene.SceneLoadManager.LoadScene("Lobby");
-            }
             Progress = message;
         }
 
