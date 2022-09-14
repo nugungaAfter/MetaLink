@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e041e9b4708c64a44a21213d8c797f2f, type: 3}
+  m_Script: {fileID: 0}
   m_Name: Default Player Setting
   m_EditorClassIdentifier: 
-  walkSpeed: 3
-  runSpeed: 5
-  mouseMinDistance: 0

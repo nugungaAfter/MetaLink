@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
-using TMPro;
 using Multiplay;
+using TMPro;
 
 namespace UI
 {
@@ -13,7 +13,6 @@ namespace UI
         [SerializeField] private CanvasGroup loginPanel;
         [SerializeField] private CanvasGroup signUpPanel;
         [SerializeField] private CanvasGroup nicknamePanel;
-        [SerializeField] private AlterUI alterUI;
 
         [Header("Input Field")]
         [SerializeField] private TMP_InputField emailIAdressInputField;
@@ -21,6 +20,12 @@ namespace UI
         [SerializeField] private TMP_InputField confirmPasswordInputField;
         [SerializeField] private TMP_InputField nicknameInputField;
 
+        private AlterUI alterUI;
+
+        private void Awake()
+        {
+            alterUI = FindObjectOfType<AlterUI>();
+        }
 
         public void LoginPanelToggle(bool active)
         {

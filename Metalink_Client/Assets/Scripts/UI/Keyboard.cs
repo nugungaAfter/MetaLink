@@ -5,14 +5,33 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class Keyboard : MonoBehaviour
+public class Keyboard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] private Transform followTarget;
+    [SerializeField] private Vector3 followOffset;
+
+    [Space(10)]
     [SerializeField] private Transform defaultKeyboard;
     [SerializeField] private Transform nomalKeyboard;
     [SerializeField] private Transform upperKeyboard;
     
     private TMP_InputField inputField;
     private bool isUpper = false;
+    private bool isHoldKeyboard = false;
+
+    private Vector3 lastFollorTargetPosition;
+    private Vector3 LastFollowTargetPostion
+    {
+        get => lastFollorTargetPosition;
+        set
+        {
+            if (value == lastFollorTargetPosition)
+                return;
+
+            lastFollorTargetPosition = value;
+            transform.position = lastFollorTargetPosition + followOffset;
+        }
+    }
 
     void Awake()
     {
@@ -23,6 +42,16 @@ public class Keyboard : MonoBehaviour
 
         gameObject.SetActive(false);
     }
+
+    private void Update()
+    {
+        if (followTarget)
+            LastFollowTargetPostion = followTarget.position;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData) => isHoldKeyboard = true;
+
+    public void OnPointerExit(PointerEventData eventData) => isHoldKeyboard = false;
 
     private void SetInputField()
     {
@@ -37,6 +66,14 @@ public class Keyboard : MonoBehaviour
                 gameObject.SetActive(true);
                 this.inputField = inputField;
             });
+            var deselect = new EventTrigger.Entry() { eventID = EventTriggerType.Deselect };
+            select.callback.AddListener(data => {
+                if (isHoldKeyboard)
+                    return;
+
+                gameObject.SetActive(false);
+                this.inputField = null;
+            });
             eventTrigger.triggers.Add(select);
         }
     }
@@ -47,7 +84,7 @@ public class Keyboard : MonoBehaviour
             var button = key.GetComponentInChildren<Button>();
             var text = key.GetComponentInChildren<TextMeshProUGUI>();
 
-            if(key.gameObject.name == "BackSpace") {
+            if (key.gameObject.name == "BackSpace") {
                 button.onClick.AddListener(() => Backspace());
             }
             else if(key.gameObject.name == "Space") {
@@ -104,8 +141,8 @@ public class Keyboard : MonoBehaviour
 
     private void Shift()
     {
+        isUpper = !isUpper;
         nomalKeyboard.gameObject.SetActive(!isUpper);
         upperKeyboard.gameObject.SetActive(isUpper);
-        isUpper = !isUpper;
     }
 }

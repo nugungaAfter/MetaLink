@@ -1,12 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections;
 using System.Text;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 // 샘플 - Position 동기화
 public class Sample_PositionHandler : NetworkHandler
 {
     [SerializeField] private Vector3 PrevPos = Vector3.zero;
+    [SerializeField] private InputActionReference w;
+    [SerializeField] private InputActionReference s;
+
+    bool isW;
+    bool isS;
 
     protected override void ParseData(string Context)
     {
@@ -27,7 +33,7 @@ public class Sample_PositionHandler : NetworkHandler
 
         // 테스트용
         Debug.Log(vec);
-        
+
         // 대입
         //transform.position = vec;
     }
@@ -44,15 +50,26 @@ public class Sample_PositionHandler : NetworkHandler
         return m_isSender == NetworkType.Send && PrevPos != transform.position;
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        w.action.started += val => isW = true;
+        w.action.canceled += val => isW = false;
+
+        s.action.started += val => isS = true;
+        s.action.canceled += val => isS = false;
+    }
+
     protected override void Update()
     {
         base.Update();
 
-        if (Input.GetKey(KeyCode.W))
+        if (isW)
         {
             transform.position += Vector3.forward * 10 * Time.deltaTime;
         }
-        else if(Input.GetKey(KeyCode.S))
+        else if(isS)
         {
             transform.position -= Vector3.forward * 10 * Time.deltaTime;
         }
